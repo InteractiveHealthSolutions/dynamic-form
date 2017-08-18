@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/fm/showform")
+@RequestMapping("/showform")
 public class ShowFormController{
 
 	ShowFormController() {
@@ -55,7 +55,6 @@ public class ShowFormController{
 		FormModuleServiceContext fmsc = FormModuleContext.getServices();
 		Form form = fmsc.getFormService().getFormById(Integer.parseInt(request.getParameter("id")));
 		try {		
-			fmsc.beginTransaction();
 			FormSubmission formSubmission = new FormSubmission();
 			formSubmission.setForm(form);
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -87,7 +86,7 @@ public class ShowFormController{
 				}
 			}
 			fmsc.commitTransaction();
-			return new ModelAndView("redirect:fm/listforms.htm");
+			return new ModelAndView("redirect:listforms.htm");
 		
 		} catch (Exception e) {
 			fmsc.rollbackTransaction();

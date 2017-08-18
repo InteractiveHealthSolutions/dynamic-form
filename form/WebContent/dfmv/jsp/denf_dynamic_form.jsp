@@ -22,60 +22,40 @@
 	<input id="action" name="action" type="hidden">
 		<table>
 			<tr>
-				<td colspan="1">Enter form name <span class="mendatory-field">*</span></td>
-	        <td colspan="4">
+			<td>Enter form name <span class="mendatory-field">*</span></td>
+	        <td>
 		        <spring:bind path='command.formName'>
 			        <input class="required" type="text" id="formName" name="${status.expression }" value="${status.value}"/>
 					<span class="error-message"><c:out	value="${status.errorMessage}" /></span>
 				</spring:bind>
 			</td>
 			</tr>
-			
 			<tr>
-			<td colspan="1">Search existing field name:</td>
-			<td colspan="4">
+			<td>Search existing field name:</td>
+			<td>
 				<input id="searchFields" name="searchFields">
 			</td>
-			<!-- <td> <a href="#" id="searchFieldsBtn">Add Field</a></td> -->
-		</tr>
+			</tr>
+			<tr><td><br><br></td></tr>
+			<tr>
+				<td>Did not find the required field?</td>
+				<td><a id="searchFieldsBtn" href="#">Create</a> a new field</td>
+			</tr>		
+			<tr>
+				<td style="vertical-align: top;">Design your form (enter valid html)</td>
+			</tr>
 		</table> 
 		<table id="fieldsDiv">
-		<%-- <tr>
-	     	<td colspan="1">Enter form name <span class="mendatory-field">*</span></td>
-	        <td colspan="4">
-		        <spring:bind path='command.formName'>
-			        <input class="required" type="text" id="formName" name="${status.expression }" value="${status.value}"/>
-					<span class="error-message"><c:out	value="${status.errorMessage}" /></span>
-				</spring:bind>
-			</td>
-		</tr>
-		
-		<tr>
-			<td colspan="1">Search existing field name:</td>
-			<td colspan="4">
-				<input id="searchFields" name="searchFields">
-			</td>
-			<!-- <td> <a href="#" id="searchFieldsBtn">Add Field</a></td> -->
-		</tr> --%>
-		
-		<tr>
-			<td colspan="5">Did not find the required field? <a id="searchFieldsBtn" href="#">Create</a> a new field</td>
-			<!-- <td colspan="5" align="center"><input type="button" id="searchFieldsBtn" value="Add Field"></td> -->
-		</tr>		
-	
-		<tr>
-			<td colspan="1" style="vertical-align: top;">Design your form (enter valid html)</td>
-		</tr>
 			<tr>
-				<td valign="top" colspan="1">
+				<td valign="top">
 					<spring:bind path="command.rawHtml">
 						<textarea id="htmltextarea" rows="20" name="rawHtml" style="width: 500px; overflow: auto;"><c:out value="${status.value}"></c:out></textarea>
 						<span class="error-message cover-width" ><c:out	value="${status.errorMessage}" /></span>
 					</spring:bind>
 				</td>
 			
-			 <td colspan="3" valign="top">
-			 	<p style=" font-style: italic;">The fields you add will be listed here. P.S. These fields would not show up in your form unless you specify them in your html.</p>
+			 <td valign="top">
+			 	<p style=" font-style: italic; width: 300px;">The fields you add will be listed here. P.S. These fields would not show up in your form unless you specify them in your html.</p>
 				<input type="text" id="searchFilter" placeholder="Type to filter" />
 				<br/>
 				<div style="max-height: 536px; overflow-y:scroll; width: 300px; ">
@@ -161,33 +141,32 @@
 				</div>
 			</td> 
 		</tr>
-		
-		<tr><td colspan="5" align="center"><input class="button" type="button" onclick="previewhtml();" value="Preview"></td></tr>
-		
+		</table>
+		<div align="center"><input class="button" type="button" onclick="previewhtml();" value="Preview"></div>
+		<table>
 		<tr>
-			<td colspan="5" align="center">
+			<td align="center">
 				<hr>Preview:<hr>
 			</td>
 		</tr>
 		<tr>
-			<td colspan="5">
+			<td>
 				<c:choose>
 					<c:when test="${command.processedHtml != null}">
-						<div style="border: 1px solid #D6DADA; padding: 5px; max-width:1560px; overflow-x:scroll;" id="previewhtmlarea">
+						<div style="border: 1px solid #D6DADA; max-width:100%; overflow-x:scroll;" id="previewhtmlarea">
 					</c:when>
 					<c:otherwise>
 						<div id="previewhtmlarea">
 					</c:otherwise>
 				</c:choose>
 				
-<!-- 				<div style="border: 1px solid gray; padding: 5px;" id="previewhtmlarea">-->					
-					<c:out value="${command.processedHtml}" escapeXml="False"><span style="font-style: italic;">Preview can be seen here.</span></c:out>
-				</div>
+				<c:out value="${command.processedHtml}" escapeXml="False"><span style="font-style: italic;">Preview can be seen here.</span></c:out>
+						</div>
 			</td>
 		</tr>
 		
 		<tr>
- 	        <td colspan="3" align="center"><input class="button" type="button" onclick="submitFrmOnly()" id="submitFormOnlyBtn" value="Save Form"> <!-- <input class="button" type="button" onclick="submitFrmWithData()" id="submitBtn" value="Save Form with Data"> --></td>
+ 	        <td align="center"><input class="button" type="button" onclick="submitFrmOnly()" id="submitFormOnlyBtn" value="Save Form"> <!-- <input class="button" type="button" onclick="submitFrmWithData()" id="submitBtn" value="Save Form with Data"> --></td>
 		</tr>
 		
 		</table>

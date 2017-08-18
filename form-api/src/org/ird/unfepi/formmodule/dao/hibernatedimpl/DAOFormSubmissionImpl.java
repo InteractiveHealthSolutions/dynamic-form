@@ -24,7 +24,7 @@ public class DAOFormSubmissionImpl extends DAOHibernateImpl implements
 	@Override
 	public List<FormSubmission> getFormSubmissionByFormId(Integer id) {
 		Criteria cri = session.createCriteria(FormSubmission.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		cri.add(Restrictions.eq("form.id", id));
+		cri.createAlias("form", "f").add(Restrictions.eq("f.id", id));
 		List<FormSubmission> frmSub = cri.list();
 		return frmSub;
 	}

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 
 @Controller
-@RequestMapping("/fm/ajax")
+@RequestMapping("/ajax")
 public class AjaxRequestHandler {
 
 	@RequestMapping(value = "/checkFieldExists", method = RequestMethod.POST)

@@ -4,9 +4,9 @@
 <%@ include file="include.jsp"%>
 <%@ include file="header.jsp"%>
 
-<link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/dfm/resources/DataTables/datatables.min.css"/>
  
-<script type="text/javascript" src="DataTables/datatables.min.js"></script> 
+<script type="text/javascript" src="${pageContext.request.contextPath}/dfm/resources/DataTables/datatables.min.js"></script> 
 
 <script>
 $(document).ready(function(){
@@ -29,7 +29,8 @@ $(document).ready(function(){
           "pageLength":10,
           "ordering":true
         });
-	$("#tableFormData").css('width','auto');
+
+	table.columns.adjust().draw();
 
 });
 function deleterow(tableID) {
@@ -46,6 +47,6 @@ function deleterow(tableID) {
 	 
 <h1>${form_name}</h1>
 <p>Data you submitted is shown below. <br> Names of the fields in the form are displayed in the top row and the corresponding data of the field is shown below the name of the field. </p>
-<table id="tableFormData">
+<table id="tableFormData" class="table table-striped table-bordered" style="border-collapse:collapse;">
 	
 </table>

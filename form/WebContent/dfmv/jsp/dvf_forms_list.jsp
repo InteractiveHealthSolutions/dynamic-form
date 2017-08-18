@@ -21,7 +21,7 @@ table,th,td{
 	 
 <h1 class="light" align="center">Forms</h1>
 <div align="center">
-	<a href="${pageContext.request.contextPath}/fm/addform.htm">Create a new form</a>
+	<a href="${pageContext.request.contextPath}/dfm/addform.htm">Create a new form</a>
 	<br><br>
 </div>
 <c:choose>
@@ -37,13 +37,13 @@ table,th,td{
 						<a>${form[0]}</a>
 					</td>
 					<td>
-						<a class="no-underline" href="${pageContext.request.contextPath}/fm/editform.htm?formid=${form[1]}">Edit Form</a>
+						<a class="no-underline" href="${pageContext.request.contextPath}/dfm/editform.htm?formid=${form[1]}">Edit Form</a>
 					</td>
 					<td>
-						<a class="no-underline" href="${pageContext.request.contextPath}/fm/showform.htm?name=${form[0]}">Fill Data</a>
+						<a class="no-underline" href="${pageContext.request.contextPath}/dfm/showform.htm?name=${form[0]}">Fill Data</a>
 					</td>
 					<td>
-						<a class="no-underline" href="${pageContext.request.contextPath}/fm/showformdata.htm?id=${form[1]}">View data</a>
+						<a class="no-underline" href="${pageContext.request.contextPath}/dfm/showformdata.htm?id=${form[1]}">View data</a>
 					</td>
 				</tr>
 			</c:forEach>

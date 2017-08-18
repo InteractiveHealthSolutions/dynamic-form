@@ -12,16 +12,6 @@
   	</servlet>
   	<servlet-mapping>
       	<servlet-name>form</servlet-name>
-      	<url-pattern>*.htm</url-pattern>
-  	</servlet-mapping>
-  	 
-  	 <context-param>
-		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/form-servlet.xml</param-value>
-	</context-param>
-
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-	
+      	<url-pattern>/dfm/*</url-pattern>
+  	</servlet-mapping>	
 </web-app>

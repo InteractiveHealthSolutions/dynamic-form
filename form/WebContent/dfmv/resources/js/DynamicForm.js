@@ -1,3 +1,8 @@
+function getAbsolutePath() {
+    var loc = window.location;
+    var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/'));
+    return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length));
+}
 
   var temp,form;
   var fieldName = null;
@@ -157,7 +162,7 @@
 				  contentType: "application/json; charset=utf-8",
 				  type:'POST',
 				  async:false,
-				  url: 'fm/ajax/checkFieldExists.htm',
+				  url: getAbsolutePath()+'/ajax/checkFieldExists.htm',
 				  data: dataToSend ,
 				  dataType: 'text',
 				  success:function(data){
@@ -188,7 +193,7 @@
 	        delay: 500,
 	        //define callback to format results
 	        source: function (request, response) {
-	            $.getJSON("fm/ajax/getAllFields.htm", request, function(result) {
+	            $.getJSON(getAbsolutePath()+"/ajax/getAllFields.htm", request, function(result) {
 	                response($.map(result, function(item) {
 	                	if(item != null){
 		                	return {
@@ -384,7 +389,7 @@
 	        $.ajax({
 				  contentType: "application/json; charset=utf-8",
 				  type:'POST',
-				  url: 'fm/ajax/createField.htm',
+				  url: getAbsolutePath()+'/ajax/createField.htm',
 				  data: JSON.stringify(formData) ,
 				  dataType: 'json',
 				  success:function(data){
@@ -479,8 +484,13 @@
 	  var t = tinyMCE.activeEditor.getContent();
      /* alert(t.replace(/&lt;/gi,'<').replace(/&gt;/gi, '>').replace(/&nbsp;/gi,' '));*/
 	  $("#action").val("preview");
+
+//	  $('#htmltextarea').val(''/*$.base64Encode(t)*/);
+//	  
+//	  alert($('#htmltextarea').val());
+	  //Cookies.set("tblFields", $("#tblFields tbody").html());
+	  
 	  $("#frm").submit();
-	  $.cookie("tblFields", $("#tblFields tbody").html());
   }
   
   function submitFrmWithData()
@@ -553,12 +563,12 @@
 	  if(obj.find("#fTypeName").val() == "select"){
 		  $("#trModelOrList").css('display','table-row');
 		  if(obj.find("#fModelOrList").val() == "model"){
-			  $('#radioModelOrList[value=' + obj.find("#fModelOrList").val() + ']').prop('checked',true);
+			  $('#radioModelOrList[value="' + obj.find("#fModelOrList").val() + '"]').prop('checked',true);
 			  $("#trModel").css("display","table-row");
 			  $("#selectModel").val(obj.find("#fModelName").val());
 		  }
 		  else if(obj.find("#fModelOrList").val() == "list"){
-			  $('#radioModelOrList[value=' + obj.find("#fModelOrList").val() + ']').prop('checked',true);
+			  $('#radioModelOrList[value="' + obj.find("#fModelOrList").val() + '"]').prop('checked',true);
 			  $("#trList").css("display","table-row");
 			  $("#txtValues").val(obj.find("#fListOptions").val());
 		  }

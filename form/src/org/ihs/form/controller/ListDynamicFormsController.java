@@ -23,12 +23,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/fm/listforms")
+@RequestMapping("/listforms")
 public class ListDynamicFormsController{
-
-	public ListDynamicFormsController() {
-//		super("dataForm", new  DataViewForm("forms_list", "Forms List", SystemPermissions.VIEW_CHILDREN_DATA, false));
-	}
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public ModelAndView listDynamicForms(HttpServletRequest request, HttpServletResponse response) throws InstanceAlreadyExistsException
@@ -37,7 +33,6 @@ public class ListDynamicFormsController{
 		FormModuleServiceContext sc = FormModuleContext.getServices();
 		try
 		{
-			FormModuleContext.instantiate(null);
 			List<Form> forms = sc.getFormService().getAllFormIdAndName();
 			model.addObject("forms", forms);
 			model.setViewName("dvf_forms_list");

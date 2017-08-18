@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/fm/addform")
+@RequestMapping("/addform")
 @SessionAttributes("command")
 public class AddFormController{
 	
@@ -60,7 +60,6 @@ public class AddFormController{
 	public ModelAndView onSubmit(@ModelAttribute("command")Form dynamicForm, BindingResult results,
 								 HttpServletRequest request, HttpServletResponse response, ModelAndView modelAndView,
 								 HttpSession session) throws Exception {		
-		
 		removeDeletedFieldsFromForm(dynamicForm);		
 		dynamicForm.setProcessedHtml(null);
 		Document doc = new DynamicFormValidator().validateForm(dynamicForm, results, ".");
@@ -88,7 +87,7 @@ public class AddFormController{
 		//		LoggedInUser user=UserSessionUtils.getActiveUser(request);
 				try {		
 					this.saveFormAndFields(fmsc, dynamicForm);
-					return new ModelAndView("redirect:fm/listforms.htm");
+					return new ModelAndView("redirect:listforms.htm");
 				
 				} catch (Exception e) {
 					fmsc.rollbackTransaction();

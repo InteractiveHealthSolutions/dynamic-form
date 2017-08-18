@@ -22,6 +22,6 @@
 	<classpathentry kind="lib" path="/unfepiApi/lib/quartz-1.8.1.jar"/>
 	<classpathentry kind="lib" path="/unfepiApi/lib/slf4j-api-1.5.6.jar"/>
 	<classpathentry kind="lib" path="/unfepiApi/lib/slf4j-log4j12-1.5.6.jar"/>
-	<classpathentry kind="lib" path="D:/zmexpanison_workspace/form-api/lib/jsoup.jar"/>
+	<classpathentry kind="lib" path="D:/unfepi_location/unfepi/unfepi/war/WEB-INF/lib/jsoup.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

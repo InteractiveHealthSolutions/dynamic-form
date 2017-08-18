@@ -26,35 +26,46 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 
 @Controller
-@RequestMapping("/fm/showformdata")
+@RequestMapping("/showformdata")
 public class ShowFormDataController {
 
 	@RequestMapping(method=RequestMethod.GET)
-	public ModelAndView showForm(@RequestParam("id") Integer id, HttpServletRequest request, HttpServletResponse response)
+	public ModelAndView showForm(@RequestParam("id") String id, HttpServletRequest request, HttpServletResponse response)
 	{		
 		FormModuleServiceContext sc = FormModuleContext.getServices();
 		try
 		{
+			Integer intId = null;
+			try{
+				intId  = Integer.parseInt(id);
+			}
+			catch(Exception e){
+				intId = sc.getFormService().getFormByName(id).getId();
+			}
 			ModelAndView model = new ModelAndView("dvf_show_form_data");
-			List<FormSubmission> formSubmission = sc.getFormSubmissionService().getFormSubmissionByFormId(id);
+			List<FormSubmission> formSubmission = sc.getFormSubmissionService().getFormSubmissionByFormId(intId);
 //			model.addObject("form",formSubmission);
-			List<Field> fields = sc.getFieldService().getFieldsByFormId(id);
+			List<Field> fields = sc.getFieldService().getFieldsByFormId(intId);
 //			model.addObject("fields", fields);
 			Map<String,Object> obj = new HashMap<String,Object>();			
 			
 			List<Object> listOfColumnsMap = new ArrayList<Object>();
-			Map<String,String> tm = null;
+			Map<String,String> tm = new HashMap<String,String>();
+			
+			tm.put("title", "Date Created"); 
+			tm.put("data", "created_date");
+			tm.put("defaultContent", "");
+			
+			listOfColumnsMap.add(tm);
+			
 			for(Field f : fields){
 				tm = new HashMap<String,String>();
 				tm.put("title", f.getFieldLabel()); 
 				tm.put("data", f.getFieldName());
+				tm.put("defaultContent", "");
+				
 				listOfColumnsMap.add(tm);
 			}
-			tm = new HashMap<String,String>();
-			tm.put("title", "Date Created"); 
-			tm.put("data", "created_date");
-			listOfColumnsMap.add(tm);
-			obj.put("columns", listOfColumnsMap);
 			
 			List<Object> listOfValuesMap = new ArrayList<Object>();
 			for(FormSubmission fs : formSubmission){
@@ -63,15 +74,15 @@ public class ShowFormDataController {
 					if(!StringUtils.isEmpty(fsf.getValue()))
 						tm.put(fsf.getField().getFieldName(), fsf.getValue()); 
 				}
-				tm.put("created_date", fs.getCreatedDate() == null ? "" : fs.getCreatedDate().toString());
-				if(tm.size() == listOfColumnsMap.size())
-					listOfValuesMap.add(tm);
-				
+				tm.put("created_date", fs.getCreatedDate() == null ? "" : fs.getCreatedDate().toString().substring(0, 10));
+
+				listOfValuesMap.add(tm);
 			}
+
 			obj.put("columns", listOfColumnsMap);
 			obj.put("data", listOfValuesMap);
 			model.addObject("obj", new Gson().toJson(obj));
-			model.addObject("form_name",sc.getFormService().getFormNameById(id));
+			model.addObject("form_name",sc.getFormService().getFormNameById(intId));
 			return model;
 		}
 		catch(Exception e ){

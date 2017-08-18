@@ -12,11 +12,12 @@
 
 	<context:component-scan base-package="org.ihs.form.controller" />
 	
-	<mvc:annotation-driven></mvc:annotation-driven>
-
+	<mvc:annotation-driven/>
+	<mvc:resources mapping="/resources/**" location="/dfmv/resources/"/>
+		
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="/fm/jsp/"></property>
+		<property name="prefix" value="/dfmv/jsp/"></property>
 		<property name="suffix" value=".jsp"></property>
 	</bean>
 

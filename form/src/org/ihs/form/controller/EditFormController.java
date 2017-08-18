@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/fm/editform")
+@RequestMapping("/editform")
 @SessionAttributes({"command","origFormName"})
 public class EditFormController {
 	
@@ -92,9 +92,13 @@ public class EditFormController {
 				if(f.getFieldType().getId() == null)
 					dynamicForm.getFieldsList().remove(f);
 			}
-			String action = request.getParameter("action");			
+			
+			String action = request.getParameter("action");
+			
 			HtmlParser.parseFields(doc,dynamicForm);
-			dynamicForm.setProcessedHtml(doc.toString());
+			doc.getElementsByTag("script").remove();
+			dynamicForm.setProcessedHtml(doc.html());
+			
 			if(action.equals("preview")){
 				modelAndView.addObject("command",dynamicForm);
 				modelAndView.setViewName("denf_dynamic_form");
@@ -109,7 +113,7 @@ public class EditFormController {
 			//		LoggedInUser user=UserSessionUtils.getActiveUser(request);
 					
 					updateFormAndFields(fmsc, dynamicForm);
-					return new ModelAndView("redirect:fm/listforms.htm");
+					return new ModelAndView("redirect:listforms.htm");
 				
 				} catch (Exception e) {				
 					fmsc.rollbackTransaction();

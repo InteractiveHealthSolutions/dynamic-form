@@ -18,7 +18,7 @@ $(document).ready(function(){
 		 <title>${form.formName}</title>
 	 </head>
 <div>
-	<form method="post">
+	<form method="post" action="${pageContext.request.contextPath}/dfm/showform.htm">
 		<input type="hidden" name="id" value="${form.id}">
 		<c:out value="${form.processedHtml}" escapeXml="false"></c:out> 
 		
