@@ -162,4 +162,8 @@ public class Attribute implements Map.Entry<String, String>, Cloneable  {
             throw new RuntimeException(e);
         }
     }
+    
+    public static String[] getBooleanAttributes(){
+    	return booleanAttributes;
+    }
 }

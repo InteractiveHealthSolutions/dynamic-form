@@ -75,6 +75,61 @@ public class HtmlParser {
 						element.remove();
 					}
 				}
+				else if(fieldToReplace.getFieldType().getName().equals("checkbox")){
+					/*if(!element.hasAttr("nolabel")){
+						element.before("<span>"+ fieldToReplace.getFieldLabel()+":</span>");
+					}*/
+					StringBuilder s = new StringBuilder();
+					if(fieldToReplace.getModelOrList().equalsIgnoreCase("list")){
+						List<String> items = Arrays.asList(fieldToReplace.getFieldOptionsCommaDelimited().split("\\s*,\\s*"));
+						for(String val: items){
+//							s.append("<input name='"+fieldToReplace.getFieldName()+"' type='checkbox' value='"+val+"'>"+val);
+							s.append("<input name='"+fieldToReplace.getFieldName()+"' type='"+fieldToReplace.getFieldType().getName()+"' value='"+val+"' ");
+							if(element.hasAttr("required"))
+								s.append("required");
+							s.append(" >" + val);
+							s.append("<br>");
+						}
+						element.before(s.toString());
+						element.remove();
+					}
+				}
+				else if(fieldToReplace.getFieldType().getName().equals("radio")){
+					/*if(!element.hasAttr("nolabel")){
+						element.before("<span>"+ fieldToReplace.getFieldLabel()+":</span>");
+					}*/
+					StringBuilder s = new StringBuilder();
+					if(fieldToReplace.getModelOrList().equalsIgnoreCase("list")){
+						List<String> items = Arrays.asList(fieldToReplace.getFieldOptionsCommaDelimited().split("\\s*,\\s*"));
+						for(String val: items){
+//							s.append("<input name='"+fieldToReplace.getFieldName()+"' type='radio' value='"+val+"'>"+val);
+							s.append("<input name='"+fieldToReplace.getFieldName()+"' type='"+fieldToReplace.getFieldType().getName()+"' value='"+val+"' ");
+							if(element.hasAttr("required"))
+								s.append("required");
+							s.append(" >" + val);
+							s.append("<br>");
+						}
+						element.before(s.toString());
+						element.remove();
+					}
+				}
+				else if(fieldToReplace.getFieldType().getName().equals("textarea")){
+					if(!element.hasAttr("nolabel")){
+						element.before("<span>"+ fieldToReplace.getFieldLabel()+":</span>");
+					}
+					StringBuilder sb = new StringBuilder();
+					sb.append("<textarea name='"+fieldToReplace.getFieldName()+"'");
+					for(Attribute a : element.attributes()){
+						if(!a.getKey().equalsIgnoreCase("name") && !a.getKey().equalsIgnoreCase("nolabel")){
+							sb.append(a.getKey()+"='"+a.getValue()+"' ");
+						}
+					}
+					sb.append(" maxlength = 2000");
+					sb.append("></textarea>");
+//					element.before("<input name='"+fieldToReplace.getFieldName()+"' type='"+fieldToReplace.getFieldType().getName()+"'></input>");
+					element.before(sb.toString());
+					element.remove();
+				}
 				else{
 					if(!element.hasAttr("nolabel")){
 						element.before("<span>"+ fieldToReplace.getFieldLabel()+":</span>");
@@ -86,6 +141,13 @@ public class HtmlParser {
 							sb.append(a.getKey()+"="+a.getValue());
 						}
 					}
+					
+					/* ADD PATTERN ATTRIBUTE FOR INPUT TYPE TEXT (for regex validation) */
+					if(fieldToReplace.getFieldType().getName().equalsIgnoreCase("text")){
+						if(!StringUtils.isEmpty(fieldToReplace.getRegex()))
+							sb.append("pattern='"+fieldToReplace.getRegex()+"'");
+					}
+					sb.append(" maxlength = 255");
 					sb.append("></input>");
 //					element.before("<input name='"+fieldToReplace.getFieldName()+"' type='"+fieldToReplace.getFieldType().getName()+"'></input>");
 					element.before(sb.toString());

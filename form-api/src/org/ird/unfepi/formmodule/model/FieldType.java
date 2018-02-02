@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name="field_type")
 public class FieldType implements java.io.Serializable {
-
+	static int counter = 0;
 	private Integer id;
 	private String name;
 	private List<Field> fields;
@@ -43,5 +43,11 @@ public class FieldType implements java.io.Serializable {
 	}
 	public void setFields(List<Field> fields) {
 		this.fields = fields;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return super.hashCode()+ ++counter;
 	}
 }

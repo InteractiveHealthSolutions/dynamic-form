@@ -3,7 +3,6 @@ package org.ird.unfepi.formmodule.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,26 +10,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.apache.commons.collections.FactoryUtils;
 import org.apache.commons.collections.list.LazyList;
-import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @Entity
 @Table (name = "form")
-public class Form implements java.io.Serializable{
+public class Form /*implements java.io.Serializable*/{
 
-/**
-	 * 
-	 */
-
-	//	public 
 	private Integer id;
 	
 	private String formName;
@@ -43,7 +36,7 @@ public class Form implements java.io.Serializable{
 	
 	@SuppressWarnings("unchecked")
 	private List<Field> fieldsList = LazyList.decorate(new ArrayList<Field>(),  
-		       FactoryUtils.instantiateFactory(Field.class)); ;
+		       FactoryUtils.instantiateFactory(Field.class));
 	
 	public Form() {
 		
@@ -97,6 +90,7 @@ public class Form implements java.io.Serializable{
 	}
 
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="form")
+	@Cascade(CascadeType.DELETE)
 	public List<FormSubmission> getFormSubmission() {
 		return formSubmission;
 	}

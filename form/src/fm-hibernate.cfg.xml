@@ -5,11 +5,15 @@
 <hibernate-configuration>
 
     <session-factory>
+    
+	    <property name="show_sql">true</property>
+		<property name="format_sql">true</property>
+		<property name="use_sql_comments">true</property>
 
         <!-- JDBC Database connection settings -->
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-      <property name="hibernate.connection.password">password</property>
-		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/unfepi</property>
+      <property name="hibernate.connection.password">123456</property>
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/form</property>
 		<property name="hibernate.connection.username">root</property>
 
         <!-- JDBC connection pool settings ... using built-in test pool -->

@@ -25,7 +25,7 @@
 			<td>Enter form name <span class="mendatory-field">*</span></td>
 	        <td>
 		        <spring:bind path='command.formName'>
-			        <input class="required" type="text" id="formName" name="${status.expression }" value="${status.value}"/>
+			        <input class="required" type="text" name="formName" id="formName" name="${status.expression }" value="${status.value}"/>
 					<span class="error-message"><c:out	value="${status.errorMessage}" /></span>
 				</spring:bind>
 			</td>
@@ -61,46 +61,61 @@
 				<div style="max-height: 536px; overflow-y:scroll; width: 300px; ">
 					<table style="border-collapse: collapse;" id="tblFields">
 						<tbody>
-						 	<c:if test="${fn:length(command.fieldsList) != 0}">
+						 	<c:if test="${fn:length(command.fieldsList) != 0}">							                 
+							                 
+							                 
 								 <c:forEach items="${command.fieldsList}" var="fi" varStatus="i">
 						             <tr id="${i.index}">   
 						             <!-- <td onclick="createFromExistingField(this);">Create</td> -->
 							             <td>
-							             	<spring:bind path="command.fieldsList[${i.index}].fieldName">                         
+							             	<spring:bind path="command.fieldsList[${i.index}].fieldName">
+							             		<script>
+							             			console.log("${i.index}");
+							             		</script>
 							                 	<input style="border: 0; text-align: center; cursor: pointer;" type='text' id='fName' name='${status.expression}' value="${status.value }" readonly/>
 							                 </spring:bind>
 							                 
 							                 
-							                 
-							                 <spring:bind path="command.fieldsList[${i.index}].fieldType.id">
-							                 	<input type="hidden" id='fTypeId' name='${status.expression}' value="${status.value }"/>
+							                 <spring:bind path="command.fieldsList">
+							                 	<input style="display: none;" id='fTypeId' name='fieldsList[${i.index}].fieldType.id' value="${fi.fieldType.id}"/>
+							                 	<input style="display:true;" id='fTypeName' name='fieldsList[${i.index}].fieldType.name' value="${fi.fieldType.name}"/>
+							                 </spring:bind>
+					
+							               <%--  <spring:bind path="command.fieldsList[${i.index}].id">
+							                 	<input style="display: none;" id='fTypeId' name='fieldsList[${i.index}].fieldType.name' value="${fi.fieldType.name}"/>
 							                 </spring:bind>
 							                 
-							                 <spring:bind path="command.fieldsList[${i.index}].fieldType.name"> 
-							                 	<input type="hidden" id='fTypeName' name='${status.expression}' value="${status.value }"/>
-							                 </spring:bind>
+							                <spring:bind path="command.fieldsList[${i.index}].fieldType.name"> 
+							                 	<input style="display:true;" id='fTypeName' name='${status.expression}' value="${status.value }"/>
+							                 </spring:bind>   --%>
+							                 
+							                <%--  <form:input path="command.fieldsList[${i.index}].fieldType.name" style="display: none;" id='fTypeName' value=""/> --%>
 							                 
 							                 <spring:bind path="command.fieldsList[${i.index}].modelOrList">
-							                 	<input type='hidden' id='fModelOrList' name='${status.expression}' value="${status.value }">
+							                 	<input style="display: none;" id='fModelOrList' name='${status.expression}' value="${status.value }">
 						           			 </spring:bind>
 						           			
 						           			 <spring:bind path="command.fieldsList[${i.index}].modelName">
-						           			 	<input type='hidden' id='fModelName' name='${status.expression}' value="${status.value }">
+						           			 	<input style="display: none;" id='fModelName' name='${status.expression}' value="${status.value }">
 						           			 </spring:bind>
 						           			
 						           			 <spring:bind path="command.fieldsList[${i.index}].fieldOptionsCommaDelimited">
-						           			 	<input type='hidden' id='fListOptions' name='${status.expression}' value="${status.value }">
+						           			 	<input style="display: none;" id='fListOptions' name='${status.expression}' value="${status.value }">
 							             	 </spring:bind>  
 							             
 								             <spring:bind path="command.fieldsList[${i.index}].fieldLabel">
-							           			<input type='hidden' id='fieldLabelHidden' name='${status.expression}' value="${status.value }">
+							           			<input style="display: none;" id='fieldLabelHidden' name='${status.expression}' value="${status.value }">
 								             </spring:bind>  
 								             
 								             <spring:bind path="command.fieldsList[${i.index}].id">
-							           			<input type='hidden' id='fieldId' name='${status.expression}' value="${status.value }">
+							           			<input style="display: none;" id='fieldId' name='${status.expression}' value="${status.value }">
 								             </spring:bind>  
 								             
+								             <spring:bind path="command.fieldsList[${i.index}].regex">
+							           			<input style="display: none;" id='regexPatHidden' name='${status.expression}' value="${status.value }">
+								             </spring:bind>  
 								             
+		
 							             </td>
 							             <td align='center'><a class="linkiconS iconedit" href="#" id='editFieldBtn' onclick='editFieldTr(this);'></a></td>
 					            		 <td align='center'><a class="linkiconS iconDelete" href="#" onclick='deleteFieldTr(this);'></a></td>
@@ -142,14 +157,19 @@
 			</td> 
 		</tr>
 		</table>
-		<div align="center"><input class="button" type="button" onclick="previewhtml();" value="Preview"></div>
-		<table>
+		<br><br>
+		<div align="center">
+			<input class="button" type="button" onclick="previewhtml();" value="Preview">
+			<input class="button" type="button" onclick="submitFrmOnly()" id="submitFormOnlyBtn" value="Save Form">
+		</div>
+		<br><br>
+		<%-- <table>
 		<tr>
-			<td align="center">
+			<td colspan="4" align="center">
 				<hr>Preview:<hr>
 			</td>
 		</tr>
-		<tr>
+		 <tr>
 			<td>
 				<c:choose>
 					<c:when test="${command.processedHtml != null}">
@@ -163,12 +183,33 @@
 				<c:out value="${command.processedHtml}" escapeXml="False"><span style="font-style: italic;">Preview can be seen here.</span></c:out>
 						</div>
 			</td>
-		</tr>
+		</tr> 
 		
+		</table> --%>
+		
+</form>
+
+ <table>
 		<tr>
- 	        <td align="center"><input class="button" type="button" onclick="submitFrmOnly()" id="submitFormOnlyBtn" value="Save Form"> <!-- <input class="button" type="button" onclick="submitFrmWithData()" id="submitBtn" value="Save Form with Data"> --></td>
+			<td align="center">
+				<hr>Preview:<hr>
+			</td>
 		</tr>
+		 <tr>
+			<td>
+				<c:choose>
+					<c:when test="${command.processedHtml != null}">
+						<div style="border: 1px solid #D6DADA; max-width:100%; overflow-x:scroll;" id="previewhtmlarea">
+					</c:when>
+					<c:otherwise>
+						<div id="previewhtmlarea">
+					</c:otherwise>
+				</c:choose>
+				
+				<c:out value="${command.processedHtml}" escapeXml="False"><span style="font-style: italic;">Preview can be seen here.</span></c:out>
+						</div>
+			</td>
+		</tr> 
 		
 		</table>
-</form>
  

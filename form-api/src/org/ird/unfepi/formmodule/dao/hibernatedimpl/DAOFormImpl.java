@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.exception.GenericJDBCException;
 import org.hibernate.transform.Transformers;
 import org.ird.unfepi.formmodule.dao.DAOForm;
 import org.ird.unfepi.formmodule.model.Form;
@@ -42,7 +43,7 @@ public class DAOFormImpl extends DAOHibernateImpl implements DAOForm{
 	}
 
 	@Override
-	public List<Form> getAllFormsIdAndName() {
+	public List<Form> getAllFormsIdAndName() throws GenericJDBCException{
 		// TODO Auto-generated method stub
 		Criteria criteria = session.createCriteria(Form.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);;
 		criteria.setProjection(Projections.projectionList().add(Projections.property("formName")).add(Projections.property("id")));
@@ -68,6 +69,7 @@ public class DAOFormImpl extends DAOHibernateImpl implements DAOForm{
 	public Form getFormById(Integer id) {
 		Criteria cri = session.createCriteria(Form.class);
 		cri.add(Restrictions.eq("id", id));
+		cri.setFetchMode("fieldsList", FetchMode.SELECT);
 		Form form = (Form) cri.uniqueResult();
 		return form;
 	}
@@ -80,7 +82,7 @@ public class DAOFormImpl extends DAOHibernateImpl implements DAOForm{
 	}
 
 	@Override
-	public String getFormNameById(Integer id) {
+	public String getFormNameById(Integer id)  throws GenericJDBCException{
 		Criteria cri = session.createCriteria(Form.class);
 		cri.add(Restrictions.eq("id", id));
 		cri.setProjection(Projections.property("formName"));

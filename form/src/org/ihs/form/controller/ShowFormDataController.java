@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +18,7 @@ import org.ird.unfepi.formmodule.model.Field;
 import org.ird.unfepi.formmodule.model.Form;
 import org.ird.unfepi.formmodule.model.FormSubmission;
 import org.ird.unfepi.formmodule.model.FormSubmissionField;
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -54,7 +56,7 @@ public class ShowFormDataController {
 			
 			tm.put("title", "Date Created"); 
 			tm.put("data", "created_date");
-			tm.put("defaultContent", "");
+/*			tm.put("defaultContent", "");*/
 			
 			listOfColumnsMap.add(tm);
 			
@@ -62,7 +64,7 @@ public class ShowFormDataController {
 				tm = new HashMap<String,String>();
 				tm.put("title", f.getFieldLabel()); 
 				tm.put("data", f.getFieldName());
-				tm.put("defaultContent", "");
+				/*tm.put("defaultContent", "");*/
 				
 				listOfColumnsMap.add(tm);
 			}
@@ -71,18 +73,29 @@ public class ShowFormDataController {
 			for(FormSubmission fs : formSubmission){
 				tm = new HashMap<String,String>();
 				for(FormSubmissionField fsf : fs.getListFields()){
-					if(!StringUtils.isEmpty(fsf.getValue()))
-						tm.put(fsf.getField().getFieldName(), fsf.getValue()); 
+					if(fsf.getField().getFieldType().getName().equalsIgnoreCase("textarea")){
+						if(!StringUtils.isEmpty(fsf.getValueTextarea()))
+							tm.put(fsf.getField().getFieldName(), fsf.getValueTextarea());
+					}
+					else if(!StringUtils.isEmpty(fsf.getValue()))
+						tm.put(fsf.getField().getFieldName(), fsf.getValue());
+					
 				}
 				tm.put("created_date", fs.getCreatedDate() == null ? "" : fs.getCreatedDate().toString().substring(0, 10));
-
+				tm.put("form_submission_id", fs.getId().toString());
 				listOfValuesMap.add(tm);
 			}
 
 			obj.put("columns", listOfColumnsMap);
+			System.out.print(listOfColumnsMap);
 			obj.put("data", listOfValuesMap);
-			model.addObject("obj", new Gson().toJson(obj));
+//			model.addObject("obj", new Gson().toJson(obj));
+//			model.addObject("obj", obj);
+//			model.addObject("obj", new JSONObject(obj));
 			model.addObject("form_name",sc.getFormService().getFormNameById(intId));
+			model.addObject("form_id",intId);
+			model.addObject("columns",listOfColumnsMap);
+			model.addObject("aaColumns",new Gson().toJson(listOfColumnsMap));
 			return model;
 		}
 		catch(Exception e ){
@@ -96,4 +109,5 @@ public class ShowFormDataController {
 		}
 		
 	}
+	
 }

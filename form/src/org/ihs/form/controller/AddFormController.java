@@ -1,16 +1,12 @@
 package org.ihs.form.controller;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.ihs.form.constants.DynamicFormConstants;
 import org.ihs.form.utils.FormUtils;
 import org.ihs.form.utils.HtmlParser;
 import org.ihs.form.validator.DynamicFormValidator;
@@ -20,10 +16,7 @@ import org.ird.unfepi.formmodule.model.Field;
 import org.ird.unfepi.formmodule.model.FieldListOptions;
 import org.ird.unfepi.formmodule.model.FieldType;
 import org.ird.unfepi.formmodule.model.Form;
-import org.ird.unfepi.formmodule.model.FormSubmission;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,12 +33,16 @@ public class AddFormController{
 	
 	@ModelAttribute
 	public void addAttributes(Model model){
+		FormModuleServiceContext fmsc = null;
 		try{
-		FormModuleServiceContext fmsc = FormModuleContext.getServices();
+		fmsc = FormModuleContext.getServices();
 		List<FieldType> fieldTypes = fmsc.getFieldTypeService().getAll();
 		model.addAttribute("fieldTypes", fieldTypes);
 		}catch(Exception e ){
 			e.printStackTrace();
+			fmsc.rollbackTransaction();
+		}finally{
+			fmsc.closeSession();
 		}
 	}
 	@RequestMapping(method=RequestMethod.GET)
@@ -59,10 +56,16 @@ public class AddFormController{
 	@RequestMapping(method=RequestMethod.POST)
 	public ModelAndView onSubmit(@ModelAttribute("command")Form dynamicForm, BindingResult results,
 								 HttpServletRequest request, HttpServletResponse response, ModelAndView modelAndView,
-								 HttpSession session) throws Exception {		
+								 HttpSession session)  {		
 		removeDeletedFieldsFromForm(dynamicForm);		
 		dynamicForm.setProcessedHtml(null);
-		Document doc = new DynamicFormValidator().validateForm(dynamicForm, results, ".");
+		Document doc = null;
+		try{
+			doc = new DynamicFormValidator().validateForm(dynamicForm, results, ".");
+		}catch(Exception e){
+			modelAndView.setViewName("denf_dynamic_form");
+			return modelAndView;
+		}
 		if(results.hasErrors()){
 			modelAndView.setViewName("denf_dynamic_form");
 			return modelAndView;	
@@ -74,18 +77,20 @@ public class AddFormController{
 				if(f.getFieldType().getId() == null)
 					dynamicForm.getFieldsList().remove(f);
 			}
-			FormModuleServiceContext fmsc = FormModuleContext.getServices();
+//			FormModuleServiceContext fmsc = FormModuleContext.getServices();
 			String action = request.getParameter("action");	
 			HtmlParser.parseFields(doc, dynamicForm);			
 			dynamicForm.setProcessedHtml(doc.toString());
 			if(action.equals("preview")){
-				modelAndView.addObject("command",dynamicForm);
+//				modelAndView.addObject("command",dynamicForm);
 				modelAndView.setViewName("denf_dynamic_form");
 				return modelAndView;	
 			}
 			else if(action.equals("submit") || action.equals("submitFormOnly")){	
 		//		LoggedInUser user=UserSessionUtils.getActiveUser(request);
+				FormModuleServiceContext fmsc = null;
 				try {		
+					fmsc = FormModuleContext.getServices();
 					this.saveFormAndFields(fmsc, dynamicForm);
 					return new ModelAndView("redirect:listforms.htm");
 				
@@ -156,7 +161,7 @@ public class AddFormController{
 			if(f.getFieldType()!=null){
 				f.getDynamicForm().add(df);
 				Integer fieldId = null;
-				if(f.getId() != null){
+				if(f.getId()!=null && f.getId() > 0){
 					fmsc.getSession().update(f);
 					fieldId = f.getId();
 				}
@@ -164,7 +169,7 @@ public class AddFormController{
 					fieldId = (Integer)fmsc.getFieldService().saveField(f);
 				}
 				
-				if(f.getFieldType().getName().equalsIgnoreCase("select")){
+				if(f.getFieldType().getName().equalsIgnoreCase("select") || f.getFieldType().getName().equalsIgnoreCase("checkbox") || f.getFieldType().getName().equalsIgnoreCase("radio")){
 					FormUtils.deletePreviousFieldOptions(f, fmsc);
 					FieldListOptions flo = null;
 					if(f.getModelOrList() != null && f.getModelOrList().equalsIgnoreCase("list")){

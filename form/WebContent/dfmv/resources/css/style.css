@@ -54,6 +54,7 @@ table#tableFormData{
 	height:auto;
 	padding-left: 0px;
 	padding-right: 0px;
+	width:auto;
 }
 table#tableFormData th{
 border: 1px solid #D6DADA;
@@ -64,6 +65,7 @@ border: 1px solid #D6DADA;
 }
 table.dataTable{
 	border-collapse: collapse;
+	width:100%; 
 }
 .linkiconS {
 	margin: 0;
@@ -142,3 +144,12 @@ table.dataTable{
   }
 
 li.ui-menu-item:hover{background-color:#ccc}
+
+.table.dataTable tbody th, table.dataTable tbody td {
+  overflow: hidden; /* this is what fixes the expansion */
+  word-break: break-all;
+}
+
+.septable{
+	width:1000px;
+}

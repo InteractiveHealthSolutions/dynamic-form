@@ -1,5 +1,6 @@
 package org.jsoup.parser;
 
+import org.jsoup.nodes.BooleanAttribute;
 import org.jsoup.nodes.DocumentType;
 
 import java.util.Arrays;
@@ -640,14 +641,16 @@ enum TokeniserState {
                     t.transition(AfterAttributeName);
                     break;
                 case '/':
-                	t.error(this, "Attribute name " + Tokeniser.attributeName +" associated with element type "+ Tokeniser.tagName +" must be followed by '='",true);
+                	if(Arrays.binarySearch(org.jsoup.nodes.Attribute.getBooleanAttributes(), Tokeniser.attributeName) < 0)
+                		t.error(this, "Attribute name " + Tokeniser.attributeName +" associated with element type "+ Tokeniser.tagName +" must be followed by '='",true);
                     t.transition(SelfClosingStartTag);
                     break;
                 case '=':
                     t.transition(BeforeAttributeValue);
                     break;
                 case '>':
-                	t.error(this, "Attribute name " + Tokeniser.attributeName +" associated with element type "+ Tokeniser.tagName +" must be followed by '='",true);
+                	if(Arrays.binarySearch(org.jsoup.nodes.Attribute.getBooleanAttributes(), Tokeniser.attributeName) < 0)
+                		t.error(this, "Attribute name " + Tokeniser.attributeName +" associated with element type "+ Tokeniser.tagName +" must be followed by '='",true);
                     t.emitTagPending();
                     t.transition(Data);
                     break;
@@ -680,14 +683,16 @@ enum TokeniserState {
                     // ignore
                     break;
                 case '/':
-                	t.error(this, "Attribute name " + Tokeniser.attributeName +" associated with element type "+ Tokeniser.tagName +" must be followed by '='",true);
+                	if(Arrays.binarySearch(org.jsoup.nodes.Attribute.getBooleanAttributes(), Tokeniser.attributeName) < 0)
+                		t.error(this, "Attribute name " + Tokeniser.attributeName +" associated with element type "+ Tokeniser.tagName +" must be followed by '='",true);
                     t.transition(SelfClosingStartTag);
                     break;
                 case '=':
                     t.transition(BeforeAttributeValue);
                     break;
                 case '>':
-                	t.error(this, "Attribute name " + Tokeniser.attributeName +" associated with element type "+ Tokeniser.tagName +" must be followed by '='",true);
+                	if(Arrays.binarySearch(org.jsoup.nodes.Attribute.getBooleanAttributes(), Tokeniser.attributeName) < 0)
+                		t.error(this, "Attribute name " + Tokeniser.attributeName +" associated with element type "+ Tokeniser.tagName +" must be followed by '='",true);
                     t.emitTagPending();
                     t.transition(Data);
                     break;

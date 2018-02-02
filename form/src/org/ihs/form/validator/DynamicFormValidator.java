@@ -1,5 +1,8 @@
 package org.ihs.form.validator;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.ird.unfepi.formmodule.context.FormModuleContext;
 import org.ird.unfepi.formmodule.context.FormModuleServiceContext;
@@ -49,19 +52,32 @@ public class DynamicFormValidator implements Validator{
 		validateRawHtml(df.getRawHtml(), errors);*/
 	}
 
-	public Document validateForm(Form form, Errors errors, String origFormName){
+	public Document validateForm(Form form, Errors errors, String origFormName) throws Exception{
 		rawHtml = form.getRawHtml().replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&nbsp;", " ").replaceAll("<p>", "").replaceAll("</p>", "");
 		if(StringUtils.isEmpty(form.getFormName()))
 			errors.rejectValue("formName", "nocode","Form name is required");
 		else{
 //			if(!EditFormController.formName.equalsIgnoreCase(form.getFormName())){
 			if(!StringUtils.isEmpty(origFormName) && !origFormName.equalsIgnoreCase(form.getFormName())){
-				FormModuleServiceContext sc = FormModuleContext.getServices();
-				Form temp = null; 
-				temp = sc.getFormService().getFormByName(form.getFormName());
-				if(temp != null)
-					errors.rejectValue("formName", "nocode", "This name already exists");
-			}
+				FormModuleServiceContext sc = null;
+				try{
+					sc = FormModuleContext.getServices();
+					Form temp = null; 
+					temp = sc.getFormService().getFormByName(form.getFormName());
+					if(temp != null)
+						errors.rejectValue("formName", "nocode", "This name already exists");
+				}catch(Exception e){
+					sc.rollbackTransaction();
+					e.printStackTrace();
+					errors.rejectValue("formName", "nocode", "Some error occurred and form could not be validated");
+					/**
+					 * TODO Show error on client side if error occurs. 
+					 */
+					throw e;
+				}finally{
+					sc.closeSession();
+				}
+				}
 		}
 		if(StringUtils.isEmpty(rawHtml))
 			errors.rejectValue("rawHtml","nocode","Please provide some html");
@@ -69,27 +85,33 @@ public class DynamicFormValidator implements Validator{
 		return validateHtml(form, errors);
 	}
 	public Document validateHtml(Form df, Errors errors){
-		/*Parser parser = Parser.htmlParser();
-		parser.setTrackErrors(50);
-		Document doc = parser.parseInput(df.getRawHtml(), "utf-8");*/
 		HtmlParser parser = new HtmlParser();
 		Document doc = parser.parseHtml(rawHtml);
-		/*Elements scriptelements = doc.getElementsByTag("script");
-		for(Element e : scriptelements){
-			e.parent().remove();
-		}*/
-		System.out.println(parser.getErrors());
+		
 		if(parser.getErrors().size()>0){
 			for(ParseError error : parser.getErrors()){
 				if(error.isCustom()){
 					errors.rejectValue("rawHtml", "nocode", error.getErrorMessage());
-//					errors.rejectValue("rawHtml", "nocode", parser.getErrors().get(0).getErrorMessage());
 					return null;
 				}
 			}
-//			errors.rejectValue("rawHtml", "nocode", parser.getErrors().get(0).getErrorMessage());
-//			return null;
 		}
+		/*******
+		 * 
+		 * 
+		 * Check for duplicate fields added
+		 * 
+		 * 
+		 *******/
+		
+		Elements elements = doc.getElementsByTag("field");
+		Set<String> elementSet = new HashSet<String>();
+		for(Element el : elements){
+			if(!elementSet.add(el.attr("name").trim()))
+				errors.rejectValue("rawHtml", "nocode", "Field with the name ' "+el.attr("name")+" ' appears multiple times in HTML (not allowed)");
+		}
+		
+		
 		{
 			String errorMsg = FieldElementsValidator.validateFieldElements(doc, df);
 			if(errorMsg != null)

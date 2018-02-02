@@ -50,7 +50,13 @@ public class EditFormController {
 		Form form;
 		try{
 			form = sc.getFormService().getFormById(formId);
-			Hibernate.initialize(form.getFieldsList());
+//			Hibernate.initialize(form.getFieldsList());
+//			form.getFieldsList();
+			for(Field field : form.getFieldsList()){
+				System.out.println(field.getFieldName());
+				Hibernate.initialize(field.getFieldType());
+				
+			}
 			List<Integer> ffIds = new ArrayList<Integer>();
 			for(Field f : form.getFieldsList()){
 				ffIds.add(f.getId());
@@ -189,7 +195,7 @@ public class EditFormController {
 				}
 				
 				//new added - start
-				if(f.getFieldType().getName().equalsIgnoreCase("select")){
+				if(f.getFieldType().getName().equalsIgnoreCase("select") || f.getFieldType().getName().equalsIgnoreCase("checkbox") || f.getFieldType().getName().equalsIgnoreCase("radio")){
 					
 					deletePreviousFieldOptions(f,fmsc);
 					FieldListOptions flo = null;

@@ -1,12 +1,13 @@
 package org.ird.unfepi.formmodule.dao.hibernatedimpl;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.ird.unfepi.formmodule.dao.DAOFormSubmission;
 import org.ird.unfepi.formmodule.model.FormSubmission;
@@ -23,9 +24,9 @@ public class DAOFormSubmissionImpl extends DAOHibernateImpl implements
 
 	@Override
 	public List<FormSubmission> getFormSubmissionByFormId(Integer id) {
-		Criteria cri = session.createCriteria(FormSubmission.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		Criteria cri = session.createCriteria(FormSubmission.class)/*.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)*/;
 		cri.createAlias("form", "f").add(Restrictions.eq("f.id", id));
-		List<FormSubmission> frmSub = cri.list();
+		List<FormSubmission> frmSub =  cri.list();
 		return frmSub;
 	}
 
@@ -45,4 +46,30 @@ public class DAOFormSubmissionImpl extends DAOHibernateImpl implements
 		List<FormSubmission> frmSub = fs.list();
 		return frmSub;
 	}*/
+	
+	@Override
+	public FormSubmission getFormSubmissionById(Integer id) {
+		Criteria cri = session.createCriteria(FormSubmission.class).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		cri.add(Restrictions.eq("id", id));
+		FormSubmission frmSub = (FormSubmission) cri.uniqueResult();
+		return frmSub;
+	}
+
+	@Override
+	public List<FormSubmission> getFormSubmissionByFormId(Integer id,
+			int start, int max) {		
+		/*Criteria cri = session.createCriteria(FormSubmission.class);
+		cri.createAlias("form", "f").add(Restrictions.eq("f.id", id));
+		cri.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).setFirstResult(start).setMaxResults(max);
+		
+		cri.setFirstResult(start);
+		cri.setMaxResults(max);
+		List<FormSubmission> frmSub = cri.list();*/
+		
+		Query query = session.createQuery("From FormSubmission where form.id = "+id);
+		query.setFirstResult(start);
+		query.setMaxResults(max);
+		List<FormSubmission> fooList = query.list();
+		return fooList;
+	}
 }

@@ -3,6 +3,7 @@ package org.ird.unfepi.formmodule.service.impl;
 import java.io.Serializable;
 import java.util.List;
 
+import org.hibernate.exception.GenericJDBCException;
 import org.ird.unfepi.formmodule.context.FormModuleServiceContext;
 import org.ird.unfepi.formmodule.dao.DAOForm;
 import org.ird.unfepi.formmodule.model.Form;
@@ -30,7 +31,7 @@ public class FormServiceImpl implements FormService{
 		return null;
 	}
 	@Override
-	public List<Form> getAllFormIdAndName() {
+	public List<Form> getAllFormIdAndName() throws GenericJDBCException{
 		// TODO Auto-generated method stub
 		return daoForm.getAllFormsIdAndName();
 	}

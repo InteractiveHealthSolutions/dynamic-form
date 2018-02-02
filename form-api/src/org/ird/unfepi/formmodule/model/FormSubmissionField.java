@@ -18,6 +18,7 @@ public class FormSubmissionField {
 	private FormSubmission formSubmission;
 	private Field field;
 	private String value;
+	private String valueTextarea;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -53,6 +54,14 @@ public class FormSubmissionField {
 	}
 	public void setValue(String value) {
 		this.value = value;
+	}
+	
+	@Column(name="value_textarea")
+	public String getValueTextarea() {
+		return valueTextarea;
+	}
+	public void setValueTextarea(String valueTextarea) {
+		this.valueTextarea = valueTextarea;
 	}
 	
 	

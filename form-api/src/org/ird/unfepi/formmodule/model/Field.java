@@ -34,6 +34,7 @@ public class Field implements java.io.Serializable {
 	private List<FieldListOptions> fieldListOptions;
 	private String fieldOptionsCommaDelimited;
 	private String fieldLabel;
+	private String regex;
 	
 	public Field()
 	{
@@ -68,7 +69,7 @@ public class Field implements java.io.Serializable {
 		this.fieldName = fieldName;
 	}
 
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="field_type_id")
 	public FieldType getFieldType() {
 		return fieldType;
@@ -111,7 +112,7 @@ public class Field implements java.io.Serializable {
 	}
 
 
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="field")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="field")
 	public List<FieldListOptions> getFieldListOptions() {
 		return fieldListOptions;
 	}
@@ -140,5 +141,19 @@ public class Field implements java.io.Serializable {
 	public void setFieldLabel(String fieldLabel) {
 		this.fieldLabel = fieldLabel;
 	}
-	
+
+	@Column(name="regex")
+	public String getRegex() {
+		return regex;
+	}
+
+
+	public void setRegex(String regex) {
+		this.regex = regex;
+	}
+	@Override
+	public int hashCode()
+	{
+		return super.hashCode()+ ++FieldType.counter;
+	}
 }

@@ -1,6 +1,7 @@
 package org.ird.unfepi.formmodule.service.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import org.ird.unfepi.formmodule.context.FormModuleServiceContext;
 import org.ird.unfepi.formmodule.dao.DAOFieldType;
@@ -23,6 +24,17 @@ public class FormSubmissionServiceImpl implements FormSubmissionService{
 	public List<FormSubmission> getFormSubmissionByFormId(Integer id) {
 		// TODO Auto-generated method stub
 		return daoFormSubmission.getFormSubmissionByFormId(id);
+	}
+
+	@Override
+	public FormSubmission getFormSubmissionById(Integer id) {
+		return daoFormSubmission.getFormSubmissionById(id);
+	}
+
+	@Override
+	public List<FormSubmission> getFormSubmissionByFormId(Integer id,
+			int start, int max) {
+		return daoFormSubmission.getFormSubmissionByFormId(id,start,max);
 	}
 
 }
